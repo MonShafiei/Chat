@@ -1,6 +1,6 @@
 package ir.mohsen.socket.main;
 
-import ir.mohsen.socket.manager.server.SocketServerRecivedText;
+import ir.mohsen.socket.manager.server.MainServer;
 
 /**
  * Created by Mohsen on 18/09/12.
@@ -8,7 +8,7 @@ import ir.mohsen.socket.manager.server.SocketServerRecivedText;
 public class Main {
 
     public static void main(String[] args) {
-        SocketServerRecivedText server =new SocketServerRecivedText();
+        MainServer server =new MainServer(8585);
 
         server.runServer();
     }

@@ -10,20 +10,29 @@ import java.util.*;
 /**
  * Created by Mohsen on 18/09/12.
  */
-public class SocketServerRecivedText {
-    static ServerSocket server;
-    static Map<String, ThreadClientManagerInServer> map = new HashMap<>();
+public class MainServer {
+    private ServerSocket server;
+    static Map<String, ThreadForManageClientInServer> map = new HashMap<>();
+    private Integer portNumber;
+
+    public MainServer() {
+
+    }
+
+    public MainServer(Integer portNumber) {
+        this.portNumber = portNumber;
+    }
 
     public void runServer() {
         Socket socket;
         Print.print("*** Server Started ***");
 
         try {
-            server = new ServerSocket(8585);
+            server = new ServerSocket(portNumber);
 
             do {
                 socket = server.accept();
-                Thread thread = new Thread(new ThreadClientManagerInServer(this, socket));
+                Thread thread = new Thread(new ThreadForManageClientInServer(this, socket));
                 thread.start();
             } while (true);
         } catch (IOException e) {
@@ -31,11 +40,11 @@ public class SocketServerRecivedText {
         }
     }
 
-    public void addClientToHashMap(String name, ThreadClientManagerInServer clientManaggerInServer) {
+    public void addClientToHashMap(String name, ThreadForManageClientInServer clientManaggerInServer) {
         map.put(name, clientManaggerInServer);
     }
 
-    public ThreadClientManagerInServer getClientFromHashMap(String name) {
+    public ThreadForManageClientInServer getClientFromHashMap(String name) {
         return map.get(name);
     }
 
