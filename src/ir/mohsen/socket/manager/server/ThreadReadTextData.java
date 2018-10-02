@@ -1,5 +1,8 @@
 package ir.mohsen.socket.manager.server;
 
+import ir.mohsen.socket.util.Print;
+import ir.mohsen.socket.util.Resource;
+
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Formatter;
@@ -12,6 +15,8 @@ public class ThreadReadTextData implements Runnable {
     Socket socket;
     ThreadForManageClientInServer threadForManageClientInServer;
     MainServer server;
+    Scanner in;
+    Formatter out = null;
     //public final String split = "::";
     //String next;
 
@@ -22,43 +27,47 @@ public class ThreadReadTextData implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Ye method dorost shod");
-        //String[] stringArray = new String[2];
+        System.out.println("One SubThread Created");
         String input = "";
         try {
-            Scanner in = new Scanner(socket.getInputStream());
-            Formatter out = null;
+            in = new Scanner(socket.getInputStream());
+            out = new Formatter(socket.getOutputStream());
+
             while (true) {
                 if (in.hasNext()) {
-                    input = in.nextLine(); //     this is test git
-                    if (input.toLowerCase().equals("send")) {
-                        try {
-                            out = new Formatter(socket.getOutputStream());
-                            out.format("Server : " + socket.getInetAddress() + " Please enter who is name ?" + "%n");
-                            out.flush();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
+                    input = in.nextLine();
+                    if (input.equalsIgnoreCase("send")) {
+
+                        outputByFormatter("Server : " + socket.getInetAddress() + " Please enter who is name ?");
+
                         input = in.nextLine();
                         threadForManageClientInServer = server.getClientFromHashMap(input);
-                        if(threadForManageClientInServer != null){
+                        if (threadForManageClientInServer != null) {
                             out.format("Server : " + socket.getInetAddress() + " Please enter your text ?" + "%n");
                             out.flush();
                             input = in.nextLine();
                             threadForManageClientInServer.sendtext(input);
                         }
+                    } else if (input.equalsIgnoreCase(Resource.LIST)) {
+
+                    } else if (input.equalsIgnoreCase(Resource.CONNECT)) {
+
+                    } else if (input.equalsIgnoreCase(Resource.EXIT)) {
+
+                    } else if (input.equalsIgnoreCase(Resource.CLOSE)) {
+
                     }
-                    System.out.println(input);
-                    //stringArray = input.split(split);
-                    //Socket newSocket = new Socket("stringArray[0]", 8585);
-                    //OutputStream outputStream = newSocket.getOutputStream();
-                    //Formatter out = new Formatter(outputStream);
-                    //out.format("Resend from : " + socket.getInetAddress() + " " + stringArray[1] + "%n");
-                    //out.flush();
+                    Print.print(input);
+
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void outputByFormatter(String inputString) {
+        out.format(inputString + "%n");
+        out.flush();
     }
 }
